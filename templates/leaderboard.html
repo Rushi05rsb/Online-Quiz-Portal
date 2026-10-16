@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard | Quiz Portal{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <span class="eyebrow">TOP RESULTS</span>
+    <h1>Leaderboard</h1>
+    <p>The latest 50 quiz submissions, ordered by score.</p>
+</section>
+
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Student</th>
+                <th>Quiz</th>
+                <th>Score</th>
+                <th>Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ result.student_name }}</td>
+                <td>{{ result.title }}</td>
+                <td>{{ result.score }}/{{ result.total_questions }}</td>
+                <td>{{ result.taken_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No quiz attempts have been recorded yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

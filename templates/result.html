@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Result | Quiz Portal{% endblock %}
+
+{% block content %}
+<section class="result-summary">
+    <span class="eyebrow">QUIZ COMPLETE</span>
+    <h1>Great effort, {{ student_name }}!</h1>
+    <p>You completed the {{ quiz_title }} quiz.</p>
+    <div class="score-circle">
+        <strong>{{ score }}</strong>
+        <span>out of {{ total_questions }}</span>
+    </div>
+    <a class="button" href="{{ url_for('student_dashboard') }}">Return to my learning</a>
+</section>
+
+<section class="section-heading">
+    <h2>Answer review</h2>
+</section>
+
+<div class="answer-list">
+    {% for question in questions %}
+    <article class="answer-card {% if question.is_correct %}correct{% else %}incorrect{% endif %}">
+        <p class="answer-status">{% if question.is_correct %}Correct{% else %}Incorrect{% endif %}</p>
+        <h3>{{ loop.index }}. {{ question.question_text }}</h3>
+        <p><strong>Your answer:</strong> {{ question.selected_answer }}</p>
+        <p><strong>Correct answer:</strong> {{ question.correct_answer }}</p>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}

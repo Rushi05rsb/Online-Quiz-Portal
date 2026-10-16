@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Admin panel | Quiz Portal{% endblock %}
+
+{% block content %}
+<section class="dashboard-hero admin-hero">
+    <div>
+        <span class="eyebrow">ADMINISTRATION</span>
+        <h1>Manage Quiz Portal.</h1>
+        <p>Create quiz content and control student access from this dashboard.</p>
+    </div>
+    <div class="dashboard-orb admin-orb">A</div>
+</section>
+
+<div class="stat-grid">
+    <article class="stat-card"><span>Students</span><strong>{{ counts.students }}</strong></article>
+    <article class="stat-card"><span>Quizzes</span><strong>{{ counts.quizzes }}</strong></article>
+    <article class="stat-card"><span>Questions</span><strong>{{ counts.questions }}</strong></article>
+    <article class="stat-card"><span>Attempts</span><strong>{{ counts.attempts }}</strong></article>
+</div>
+
+<div class="admin-form-grid">
+    <form class="panel-form" method="post" action="{{ url_for('add_quiz') }}">
+        <span class="eyebrow">QUIZ MANAGEMENT</span>
+        <h2>Create a quiz</h2>
+        <label for="title">Quiz title</label>
+        <input id="title" name="title" type="text" maxlength="120" placeholder="Example: Python Advanced" required>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" maxlength="500" placeholder="Write a short description" required></textarea>
+        <button class="button" type="submit">Create quiz</button>
+    </form>
+
+    <form class="panel-form" method="post" action="{{ url_for('add_question') }}">
+        <span class="eyebrow">QUESTION MANAGEMENT</span>
+        <h2>Add a question</h2>
+        <label for="quiz_id">Quiz</label>
+        <select id="quiz_id" name="quiz_id" required>
+            <option value="">Select a quiz</option>
+            {% for quiz in quizzes %}<option value="{{ quiz.id }}">{{ quiz.title }}</option>{% endfor %}
+        </select>
+        <label for="question_text">Question</label>
+        <textarea id="question_text" name="question_text" maxlength="1000" required></textarea>
+        <div class="option-input-grid">
+            {% for number in range(1, 5) %}
+            <div>
+                <label for="option_{{ number }}">Option {{ number }}</label>
+                <input id="option_{{ number }}" name="option_{{ number }}" type="text" maxlength="500" required>
+            </div>
+            {% endfor %}
+        </div>
+        <label for="correct_option">Correct option</label>
+        <select id="correct_option" name="correct_option" required>
+            <option value="">Select correct answer</option>
+            <option value="1">Option 1</option><option value="2">Option 2</option>
+            <option value="3">Option 3</option><option value="4">Option 4</option>
+        </select>
+        <button class="button" type="submit">Add question</button>
+    </form>
+</div>
+
+<section class="section-heading result-heading"><h2>Latest questions</h2></section>
+<div class="table-card">
+    <table>
+        <thead><tr><th>Quiz</th><th>Question</th><th>Action</th></tr></thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <td>{{ question.title }}</td>
+                <td>{{ question.question_text }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('delete_question', question_id=question.id) }}" onsubmit="return confirm('Delete this question?');">
+                        <button class="table-button danger-button" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">No questions found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<section class="section-heading result-heading"><h2>Student accounts</h2></section>
+<div class="table-card">
+    <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th><th>Action</th></tr></thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.full_name }}</td>
+                <td>{{ student.email }}</td>
+                <td><span class="status-pill {% if student.is_active %}status-active{% else %}status-inactive{% endif %}">{{ 'Active' if student.is_active else 'Disabled' }}</span></td>
+                <td>{{ student.created_at.strftime('%d %b %Y') }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('toggle_student', student_id=student.id) }}">
+                        <button class="table-button" type="submit">{{ 'Disable' if student.is_active else 'Enable' }}</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No student accounts have been created yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

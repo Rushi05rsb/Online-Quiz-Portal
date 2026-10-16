@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Portal | Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <span class="eyebrow">LEARN &middot; TEST &middot; IMPROVE</span>
+    <h1>Test your knowledge.</h1>
+    <p>Choose a quiz, answer every question, and see your score immediately.</p>
+    {% if not current_user %}
+    <div class="hero-actions">
+        <a class="button" href="{{ url_for('student_login') }}">Student login</a>
+        <a class="button button-secondary" href="{{ url_for('register') }}">Create student account</a>
+    </div>
+    {% elif current_user.role == 'student' %}
+    <div class="hero-actions"><a class="button" href="{{ url_for('student_dashboard') }}">Open my learning</a></div>
+    {% else %}
+    <div class="hero-actions"><a class="button" href="{{ url_for('admin_dashboard') }}">Open admin panel</a></div>
+    {% endif %}
+</section>
+
+<section class="section-heading">
+    <h2>Available quizzes</h2>
+</section>
+
+<div class="quiz-grid">
+    {% for quiz in quizzes %}
+    <article class="quiz-card">
+        <div class="quiz-icon">?</div>
+        <h3>{{ quiz.title }}</h3>
+        <p>{{ quiz.description }}</p>
+        <p class="question-count">{{ quiz.question_count }} questions</p>
+        {% if current_user and current_user.role == 'student' %}
+        <a class="button" href="{{ url_for('quiz', quiz_id=quiz.id) }}">Start quiz</a>
+        {% elif not current_user %}
+        <a class="button" href="{{ url_for('student_login') }}">Sign in to start</a>
+        {% endif %}
+    </article>
+    {% else %}
+    <p>No quizzes are available yet. Run <code>schema.sql</code> in MySQL first.</p>
+    {% endfor %}
+</div>
+{% endblock %}

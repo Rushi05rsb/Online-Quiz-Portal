@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Error | Quiz Portal{% endblock %}
+
+{% block content %}
+<section class="error-box">
+    <span class="eyebrow">ERROR</span>
+    <h1>We could not complete that request.</h1>
+    <p>{{ message }}</p>
+    <a class="button" href="{{ url_for('home') }}">Return home</a>
+</section>
+{% endblock %}

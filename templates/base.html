@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Quiz Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a class="brand" href="{{ url_for('home') }}" aria-label="Quiz Portal home">
+                <span class="brand-logo" aria-hidden="true"><span>Q</span></span>
+                <span>Quiz Portal<small>LEARN. PLAY. GROW.</small></span>
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                {% if current_user %}
+                    {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}">Admin panel</a>
+                    {% else %}
+                    <a href="{{ url_for('student_dashboard') }}">My learning</a>
+                    {% endif %}
+                    <span class="user-chip">{{ current_user.full_name }}</span>
+                    <a href="{{ url_for('logout') }}">Log out</a>
+                {% else %}
+                    <a href="{{ url_for('student_login') }}">Student login</a>
+                    <a class="nav-admin-link" href="{{ url_for('admin_login') }}">Admin login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>Quiz Portal &middot; College project using Python, Flask, HTML, CSS, and MySQL</footer>
+</body>
+</html>

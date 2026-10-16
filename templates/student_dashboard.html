@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}My learning | Quiz Portal{% endblock %}
+
+{% block content %}
+<section class="dashboard-hero">
+    <div>
+        <span class="eyebrow">STUDENT DASHBOARD</span>
+        <h1>Hello, {{ current_user.full_name }}.</h1>
+        <p>Choose a quiz below and build your score.</p>
+    </div>
+    <div class="dashboard-orb">{{ results|length }}</div>
+</section>
+
+<section class="section-heading split-heading">
+    <h2>Available quizzes</h2>
+    <span>{{ quizzes|length }} available</span>
+</section>
+
+<div class="quiz-grid">
+    {% for quiz in quizzes %}
+    <article class="quiz-card">
+        <div class="quiz-icon">?</div>
+        <h3>{{ quiz.title }}</h3>
+        <p>{{ quiz.description }}</p>
+        <p class="question-count">{{ quiz.question_count }} questions</p>
+        <a class="button" href="{{ url_for('quiz', quiz_id=quiz.id) }}">Start quiz</a>
+    </article>
+    {% else %}
+    <p>No quizzes are available yet.</p>
+    {% endfor %}
+</div>
+
+<section class="section-heading result-heading"><h2>My recent results</h2></section>
+<div class="table-card">
+    <table>
+        <thead><tr><th>Quiz</th><th>Score</th><th>Submitted</th></tr></thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.title }}</td>
+                <td>{{ result.score }}/{{ result.total_questions }}</td>
+                <td>{{ result.taken_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">You have not submitted a quiz yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
